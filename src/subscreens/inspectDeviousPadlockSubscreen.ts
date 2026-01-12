@@ -407,15 +407,21 @@ export class InspectDeviousPadlockSubscreen extends BaseSubscreen {
                             padding: 2
                         });
 
+                        let unlockTimeValue = "";
+                        if (this.padlockSettings.unlockTime) {
+                            const utcUnlockTime = new Date(this.padlockSettings.unlockTime);
+                            const localUnlockTime = new Date(utcUnlockTime.getTime() - (utcUnlockTime.getTimezoneOffset() * 60000));
+                            unlockTimeValue = localUnlockTime.toISOString().slice(0, 16);
+                        }
                         const unlockTime = this.createInput({
                             x: 1050,
                             y: 325,
                             width: 850,
                             padding: 2,
                             placeholder: "Time",
-                            value: this.padlockSettings.unlockTime ?? "",
+                            value: unlockTimeValue,
                             onChange: () => {
-                                this.padlockSettings.unlockTime = unlockTime.value;
+                                this.padlockSettings.unlockTime = new Date(unlockTime.value).toISOString();
                             },
                             isDisabled: () => !this.canEdit()
                         });
